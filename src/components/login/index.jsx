@@ -1,10 +1,10 @@
 
-const LoginComponent = () => {
+const LoginComponent = ({handleChange, handleLogin}) => {
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
                 <h2 className="text-2xl font-bold text-center">Sign in to your account</h2>
-                <form className="mt-8 space-y-6">
+                <form className="mt-8 space-y-6" onSubmit={handleLogin}>
                     <div className="space-y-4">
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -17,6 +17,7 @@ const LoginComponent = () => {
                                 required
                                 className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 placeholder="Email or Username required"
+                                onChange={handleChange}
                             />
                         </div>
                         <div>
@@ -29,6 +30,7 @@ const LoginComponent = () => {
                                 id="password"
                                 required
                                 className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                onChange={handleChange}
                             />
                         </div>
                         <div className="flex items-center justify-between">
