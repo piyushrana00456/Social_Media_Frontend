@@ -13,20 +13,22 @@ const LoginPage = () => {
         e.preventDefault();
         const {email, password} = credentials;
         try {
-            await fetch('http://localhost:8000/api/auth/reg', {
+        let res = await fetch('http://localhost:8000/api/auth/reg', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({email, password})
-           }).then((res) => {
-              if(!res.ok) {
-                 throw new Error('Failed to login')  
-              }
-              const data = res.json();
-              console.log({data});
-              login(data)
-           })
+           });
+
+           if(!res.ok){
+            throw new Error('Failed to login')
+           }
+
+           let data = await res.json();
+           console.log({data});
+           login(data)
+
         } catch (error) {
             console.error('Error during login', error.message);
         }
