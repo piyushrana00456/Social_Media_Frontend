@@ -1,29 +1,27 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
-
+import Cookies from "js-cookie";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({children}) => {
-   const [user, setUser] = useState(null);
    const [loading, setLoading] = useState(true);
    const router = useRouter();
    useEffect(() => {
-      const userData = window.localStorage.getItem('user');
-      if(userData) {
-        setUser(JSON.parse(userData))   
+      const userDataFromCookie = Cookies.get('userData')
+      if(userDataFromCookie) {
+        Cookies.set('userData', JSON.stringify(userDataFromCookie) , {expires : 30})
       }
       setLoading(false);
    },[])
     
    const login = (userData) => {
-     localStorage.setItem('user', JSON.stringify(userData));
-     setUser(userData);
+     Cookies.set('userData', JSON.stringify(userData) , {expires : 30})
      router.push('/'); 
    }
 
    return (
-      <AuthContext.Provider value={{user, login, loading}}>
+      <AuthContext.Provider value={{login, loading}}>
           {children}
       </AuthContext.Provider>
    )
