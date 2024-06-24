@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
@@ -6,6 +6,7 @@ import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 const NavbarComponent = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState({isProfileDropDownOpen: false, isHamburgerMenuOpen: false});
     const [searchValue, setSearchValue] = useState('');
+    const debounceTimer = useRef(null);
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => ({...prev, isProfileDropDownOpen : !prev.isProfileDropDownOpen}));
@@ -16,7 +17,28 @@ const NavbarComponent = () => {
     }
 
     const handleChange = (e) => {
-        setSearchValue(e.target.value);
+        const value = e.target.value
+        setSearchValue(value);
+        console.log({searchValue});
+        if(value === ""){
+            setSearchValue("");
+            return;
+        }
+        
+        if(debounceTimer.current) clearTimeout(debounceTimer.current);
+
+        debounceTimer.current = setTimeout(() => {
+           if(value !== ""){
+                fetch(`http://localhost:8000/api/search/${value}`, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                }).then(res => res.json()).then((res) => {
+
+                })
+           }
+        }, 5000)
     }
 
     return (
