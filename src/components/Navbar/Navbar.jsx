@@ -5,6 +5,7 @@ import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 
 const NavbarComponent = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState({isProfileDropDownOpen: false, isHamburgerMenuOpen: false});
+    const [searchValue, setSearchValue] = useState('');
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => ({...prev, isProfileDropDownOpen : !prev.isProfileDropDownOpen}));
@@ -13,6 +14,11 @@ const NavbarComponent = () => {
     const toggleHamburger = () => {
         setIsDropdownOpen((prev) => ({...prev, isHamburgerMenuOpen: !prev.isHamburgerMenuOpen}));
     }
+
+    const handleChange = (e) => {
+        setSearchValue(e.target.value);
+    }
+
     return (
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
@@ -27,6 +33,8 @@ const NavbarComponent = () => {
                         type="text"
                         placeholder="Search"
                         className="w-full pl-10 pr-4 py-2 text-gray-700 bg-gray-100 rounded-md focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500"
+                        value={searchValue}
+                        onChange={(e) => handleChange(e)}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
                 </div>
