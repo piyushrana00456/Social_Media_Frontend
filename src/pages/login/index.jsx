@@ -13,7 +13,7 @@ const LoginPage = () => {
         e.preventDefault();
         const {email, password} = credentials;
         try {
-        let res = await fetch('http://localhost:8000/api/auth/reg', {
+        let res = await fetch('http://localhost:8000/api/auth/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
