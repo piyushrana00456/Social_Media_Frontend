@@ -2,20 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
+import { getCookies } from '@/utils';
 
 const NavbarComponent = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState({ isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false });
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounceTimer = useRef(null);
-    const [token, setToken] = useState(null);
-
-    useEffect(() => {
-        const user = JSON.parse(window.localStorage.getItem("user"));
-        if (user && user.token) {
-            setToken(user.token);
-        }
-    }, [])
+    const user = getCookies('userData');
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => ({ ...prev, isProfileDropDownOpen: !prev.isProfileDropDownOpen }));
@@ -46,7 +40,7 @@ const NavbarComponent = () => {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': token
+                        'Authorization': user?.token
                     },
                 }).then(res => res.json()).then((res) => {
                     setSearchResult(res.users || []);
