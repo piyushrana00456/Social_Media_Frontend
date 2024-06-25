@@ -1,12 +1,22 @@
-import React, {useRef, useState} from 'react';
+'use client'
+import React, {useEffect, useRef, useState} from 'react';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 
-const NavbarComponent = () => {
+const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
     const [isDropdownOpen, setIsDropdownOpen] = useState({isProfileDropDownOpen: false, isHamburgerMenuOpen: false});
     const [searchValue, setSearchValue] = useState('');
     const debounceTimer = useRef(null);
+    const [token, setToken] = useState(null);
+
+    useEffect(() => {
+        const user = JSON.parse(window.localStorage.getItem("user"));
+
+        if(user && user.token){
+            setToken(user.token);
+        }
+    }, [])
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => ({...prev, isProfileDropDownOpen : !prev.isProfileDropDownOpen}));
@@ -32,13 +42,14 @@ const NavbarComponent = () => {
                 fetch(`http://localhost:8000/api/search/${value}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Authorization': token
                     },
                 }).then(res => res.json()).then((res) => {
-
+                    setIsSearchInFocus((prev) => ({...prev, data: res.users}))
                 })
            }
-        }, 5000)
+        }, 2000)
     }
 
     return (
@@ -57,6 +68,7 @@ const NavbarComponent = () => {
                         className="w-full pl-10 pr-4 py-2 text-gray-700 bg-gray-100 rounded-md focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500"
                         value={searchValue}
                         onChange={(e) => handleChange(e)}
+                        onFocus={()=> setIsSearchInFocus({inFocus: true})}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
                 </div>
