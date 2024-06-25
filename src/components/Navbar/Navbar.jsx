@@ -81,7 +81,7 @@ const NavbarComponent = () => {
                             <ul>
                                 {
                                     searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
-                                        <li className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex">
+                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex">
                                             <img
                                                 src={profilePic}
                                                 alt="User Avatar"
