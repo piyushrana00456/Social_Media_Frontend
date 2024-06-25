@@ -8,11 +8,12 @@ export const AuthProvider = ({children}) => {
    const [loading, setLoading] = useState(true);
    const router = useRouter();
    useEffect(() => {
-      const userDataFromCookie = Cookies.get('userData')
-      if(userDataFromCookie) {
-        Cookies.set('userData', JSON.stringify(userDataFromCookie) , {expires : 30})
-      }
-      setLoading(false);
+      // const userDataFromCookie = Cookies.get('userData')
+      // console.log('userDataFromCookie:', userDataFromCookie)
+      // if(userDataFromCookie) {
+      //   Cookies.set('userData', JSON.stringify(userDataFromCookie) , {expires : 30})
+      // }
+      // setLoading(false);
    },[])
     
    const login = (userData) => {
