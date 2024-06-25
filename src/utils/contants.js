@@ -6,3 +6,9 @@ export const GENDERS = [
     {value: "female", label: "Female"},
     {value: "other", label: "Other"},
 ]
+
+export const RESTRICTED_NAVBAR_PATHS = [
+    '/login',
+    '/register',
+    '/login/otp',
+]

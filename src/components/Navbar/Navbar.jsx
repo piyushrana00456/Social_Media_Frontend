@@ -1,44 +1,47 @@
-'use client'
-import React, {useEffect, useRef, useState} from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 
-const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
-    const [isDropdownOpen, setIsDropdownOpen] = useState({isProfileDropDownOpen: false, isHamburgerMenuOpen: false});
+const NavbarComponent = () => {
+    const [isDropdownOpen, setIsDropdownOpen] = useState({ isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false });
     const [searchValue, setSearchValue] = useState('');
+    const [searchResult, setSearchResult] = useState([]);
     const debounceTimer = useRef(null);
     const [token, setToken] = useState(null);
 
     useEffect(() => {
         const user = JSON.parse(window.localStorage.getItem("user"));
-
-        if(user && user.token){
+        if (user && user.token) {
             setToken(user.token);
         }
     }, [])
 
     const toggleDropdown = () => {
-        setIsDropdownOpen((prev) => ({...prev, isProfileDropDownOpen : !prev.isProfileDropDownOpen}));
+        setIsDropdownOpen((prev) => ({ ...prev, isProfileDropDownOpen: !prev.isProfileDropDownOpen }));
     };
 
     const toggleHamburger = () => {
-        setIsDropdownOpen((prev) => ({...prev, isHamburgerMenuOpen: !prev.isHamburgerMenuOpen}));
+        setIsDropdownOpen((prev) => ({ ...prev, isHamburgerMenuOpen: !prev.isHamburgerMenuOpen }));
+    }
+
+    const toggleSearch = (state) => {
+        setIsDropdownOpen((prev) => ({ ...prev, isSearchOpen: state }));
     }
 
     const handleChange = (e) => {
         const value = e.target.value
         setSearchValue(value);
-        console.log({searchValue});
-        if(value === ""){
+        console.log({ searchValue });
+        if (value === "") {
             setSearchValue("");
             return;
         }
-        
-        if(debounceTimer.current) clearTimeout(debounceTimer.current);
+
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
         debounceTimer.current = setTimeout(() => {
-           if(value !== ""){
+            if (value !== "") {
                 fetch(`http://localhost:8000/api/search/${value}`, {
                     method: 'GET',
                     headers: {
@@ -46,9 +49,9 @@ const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
                         'Authorization': token
                     },
                 }).then(res => res.json()).then((res) => {
-                    setIsSearchInFocus((prev) => ({...prev, data: res.users}))
+                    setSearchResult(res.users || []);
                 })
-           }
+            }
         }, 2000)
     }
 
@@ -56,24 +59,53 @@ const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
                 <div className="flex items-center w-1/4">
-                    <GiHamburgerMenu 
-                        size={'2rem'} 
+                    <GiHamburgerMenu
+                        size={'2rem'}
                         onClick={toggleHamburger}
                     />
                 </div>
-                <div className="relative flex-1 w-1/2">
+                <div className="relative flex-1 w-1/2" >
                     <input
                         type="text"
                         placeholder="Search"
                         className="w-full pl-10 pr-4 py-2 text-gray-700 bg-gray-100 rounded-md focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500"
                         value={searchValue}
                         onChange={(e) => handleChange(e)}
-                        onFocus={()=> setIsSearchInFocus({inFocus: true})}
+                        onClick={() => toggleSearch(true)}
+                        onBlur={() => toggleSearch(false)}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
+                    {isDropdownOpen?.isSearchOpen && (
+                        <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
+                            <ul>
+                                {
+                                    searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
+                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex">
+                                            <img
+                                                src={profilePic}
+                                                alt="User Avatar"
+                                                className="h-8 w-8 rounded-full cursor-pointer"
+                                            />
+                                            <span className='pl-4'>{username}</span>
+                                        </li>
+                                    )) : 
+                                    (
+                                        <li className='px-4 py-4 hover:bg-gray-200 cursor-pointer text-center font-semibold text-xl'>
+                                            No User Found
+                                        </li>
+                                    )
+                                }
+                            </ul>
+                            <div className="border-t">
+                                <button className="w-full px-4 py-2 text-blue-500 hover:bg-gray-200 focus:outline-none">
+                                    View All Search Results
+                                </button>
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="flex items-center space-x-4 w-1/4 justify-end">
-                    <FaBell className="text-gray-500" size={'2rem'}/>
+                    <FaBell className="text-gray-500" size={'2rem'} />
                     <div className="relative">
                         <img
                             src="https://res.cloudinary.com/dnc3g9s6f/image/upload/v1718890814/zjvfntcm4ek9n1adub9w.webp"
@@ -84,7 +116,7 @@ const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
                         {isDropdownOpen?.isProfileDropDownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                 {
-                                    USER_PROFILE_OPTIONS?.map(({value, label}) => (
+                                    USER_PROFILE_OPTIONS?.map(({ value, label }) => (
                                         <div key={value} className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>
                                             {label}
                                         </div>
@@ -95,28 +127,28 @@ const NavbarComponent = ({isSearchInFocus, setIsSearchInFocus}) => {
                     </div>
                 </div>
                 {isDropdownOpen?.isHamburgerMenuOpen && (
-                <div className="fixed top-0 left-0 w-64 h-full bg-white shadow-lg z-40">
-                    <div className="p-4">
-                    <div className="p-4 flex justify-between items-center border-b">
-                        <h2 className="text-2xl font-bold">Menu</h2>
-                        <FaTimes 
-                            size='2rem'
-                            className="text-gray-700 cursor-pointer" 
-                            onClick={toggleHamburger} 
-                        />
+                    <div className="fixed top-0 left-0 w-64 h-full bg-white shadow-lg z-40">
+                        <div className="p-4">
+                            <div className="p-4 flex justify-between items-center border-b">
+                                <h2 className="text-2xl font-bold">Menu</h2>
+                                <FaTimes
+                                    size='2rem'
+                                    className="text-gray-700 cursor-pointer"
+                                    onClick={toggleHamburger}
+                                />
+                            </div>
+                            <ul className="mt-4">
+                                {
+                                    HAMBURGER_OPTIONS?.map(({ value, label }) => (
+                                        <li key={value} className="border-b py-2">
+                                            <div className="text-gray-700 hover:bg-gray-100 block px-4 py-2 rounded">{label}</div>
+                                        </li>
+                                    ))
+                                }
+                            </ul>
+                        </div>
                     </div>
-                        <ul className="mt-4">
-                            {
-                                HAMBURGER_OPTIONS?.map(({value, label}) => (
-                                    <li key={value} className="border-b py-2">
-                                        <div className="text-gray-700 hover:bg-gray-100 block px-4 py-2 rounded">{label}</div>
-                                    </li> 
-                                ))
-                            }
-                        </ul>
-                    </div>
-                </div>
-            )}
+                )}
             </div>
         </nav>
     );
