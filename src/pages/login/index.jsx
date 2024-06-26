@@ -26,7 +26,6 @@ const LoginPage = () => {
            }
 
            let data = await res.json();
-           console.log({data});
            login(data)
 
         } catch (error) {
@@ -34,7 +33,6 @@ const LoginPage = () => {
         }
 
     }
- console.log({credentials})
     return (
         <div className="border-2 text-center text-2xl font-bold">
             <LoginComponent handleChange={handleChange} handleLogin={handleLogin}/>

@@ -7,12 +7,10 @@ const PrivateRoute = ({children}) => {
         const router  = useRouter();
         const user = Cookies.get('userData')
         const [checkingAuth, setCheckingAuth] = useState(true);
-        console.log("Inside PrivateRoute", { user, loading });
 
         useEffect(() => {
          if(!loading) {
           if(!user) {
-            console.log("Redirecting to login");
             router.push('/login')
           } else {
            setCheckingAuth(false);
