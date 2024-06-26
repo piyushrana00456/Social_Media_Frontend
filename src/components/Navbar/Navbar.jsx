@@ -1,15 +1,18 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/router';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 import { getCookies } from '@/utils';
 
 const NavbarComponent = () => {
+    const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState({ isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false });
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounceTimer = useRef(null);
     const user = getCookies('userData');
+    const searchRef = useRef(null);
 
     const toggleDropdown = () => {
         setIsDropdownOpen((prev) => ({ ...prev, isProfileDropDownOpen: !prev.isProfileDropDownOpen }));
@@ -26,7 +29,6 @@ const NavbarComponent = () => {
     const handleChange = (e) => {
         const value = e.target.value
         setSearchValue(value);
-        console.log({ searchValue });
         if (value === "") {
             setSearchValue("");
             return;
@@ -49,6 +51,30 @@ const NavbarComponent = () => {
         }, 2000)
     }
 
+    const handleClickOutside = (event) => {
+        if (searchRef.current && !searchRef.current.contains(event.target)) {
+            toggleSearch(false);
+        }
+    };
+
+    useEffect(() => {
+        if (isDropdownOpen.isSearchOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [isDropdownOpen.isSearchOpen]);
+
+    const handleViewAllClick = (e) => {
+        e.stopPropagation();
+        toggleSearch(false);
+        router.push(`/search?username=${searchValue}`)
+    }
+
     return (
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
@@ -58,7 +84,7 @@ const NavbarComponent = () => {
                         onClick={toggleHamburger}
                     />
                 </div>
-                <div className="relative flex-1 w-1/2" >
+                <div className="relative flex-1 w-1/2" ref={searchRef}>
                     <input
                         type="text"
                         placeholder="Search"
@@ -66,7 +92,7 @@ const NavbarComponent = () => {
                         value={searchValue}
                         onChange={(e) => handleChange(e)}
                         onClick={() => toggleSearch(true)}
-                        onBlur={() => toggleSearch(false)}
+                        // onBlur={() => toggleSearch(false)}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
                     {isDropdownOpen?.isSearchOpen && (
@@ -82,16 +108,19 @@ const NavbarComponent = () => {
                                             />
                                             <span className='pl-4'>{username}</span>
                                         </li>
-                                    )) : 
-                                    (
-                                        <li className='px-4 py-4 hover:bg-gray-200 cursor-pointer text-center font-semibold text-xl'>
-                                            No User Found
-                                        </li>
-                                    )
+                                    )) :
+                                        (
+                                            <li className='px-4 py-4 hover:bg-gray-200 cursor-pointer text-center font-semibold text-xl'>
+                                                No User Found
+                                            </li>
+                                        )
                                 }
                             </ul>
                             <div className="border-t">
-                                <button className="w-full px-4 py-2 text-blue-500 hover:bg-gray-200 focus:outline-none">
+                                <button 
+                                    className="w-full px-4 py-2 text-blue-500 hover:bg-gray-200 focus:outline-none"
+                                    onClick={handleViewAllClick}
+                                >
                                     View All Search Results
                                 </button>
                             </div>
@@ -133,8 +162,8 @@ const NavbarComponent = () => {
                             </div>
                             <ul className="mt-4">
                                 {
-                                    HAMBURGER_OPTIONS?.map(({ value, label }) => (
-                                        <li key={value} className="border-b py-2">
+                                    HAMBURGER_OPTIONS?.map(({ value, label, path }) => (
+                                        <li key={value} className="border-b py-2" onClick={() => {router.push(path); toggleHamburger()}}>
                                             <div className="text-gray-700 hover:bg-gray-100 block px-4 py-2 rounded">{label}</div>
                                         </li>
                                     ))

@@ -6,8 +6,8 @@ export const USER_PROFILE_OPTIONS = [
 ]
 
 export const HAMBURGER_OPTIONS = [
-    {value: 'home', label: "Home"},
-    {value: 'about', label: "About"},
-    {value: 'services', label: "Services"},
-    {value: 'contact', label: "Contact"},
+    {value: 'home', label: "Home", path: '/'},
+    {value: 'about', label: "About", path: '/'},
+    {value: 'services', label: "Services", path: '/'},
+    {value: 'contact', label: "Contact", path: '/'},
 ]
