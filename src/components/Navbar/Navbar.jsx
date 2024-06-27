@@ -1,9 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 import { getCookies } from '@/utils';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const NavbarComponent = () => {
     const router = useRouter();
@@ -31,24 +33,27 @@ const NavbarComponent = () => {
         setSearchValue(value);
         if (value === "") {
             setSearchValue("");
+            setSearchResult([])
             return;
         }
+        
+        if(value.length > 2){
 
-        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
-        debounceTimer.current = setTimeout(() => {
-            if (value !== "") {
-                fetch(`http://localhost:8000/api/search/${value}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': user?.token
-                    },
-                }).then(res => res.json()).then((res) => {
-                    setSearchResult(res.users || []);
-                })
-            }
-        }, 2000)
+            debounceTimer.current = setTimeout(() => {
+                if (value !== "") {
+                    axios.get(`${BASE_URL}/api/search/${value}`, {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': user?.token
+                        },
+                    }).then(res => {
+                        setSearchResult(res.data?.users || []);
+                    })
+                }
+            }, 2500);
+        }
     }
 
     const handleClickOutside = (event) => {
@@ -92,7 +97,6 @@ const NavbarComponent = () => {
                         value={searchValue}
                         onChange={(e) => handleChange(e)}
                         onClick={() => toggleSearch(true)}
-                        // onBlur={() => toggleSearch(false)}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
                     {isDropdownOpen?.isSearchOpen && (
@@ -100,7 +104,9 @@ const NavbarComponent = () => {
                             <ul>
                                 {
                                     searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
-                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex">
+                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex"
+                                            onClick={() => router.push(`/profile/${username}`)}
+                                        >
                                             <img
                                                 src={profilePic}
                                                 alt="User Avatar"
@@ -117,7 +123,7 @@ const NavbarComponent = () => {
                                 }
                             </ul>
                             <div className="border-t">
-                                <button 
+                                <button
                                     className="w-full px-4 py-2 text-blue-500 hover:bg-gray-200 focus:outline-none"
                                     onClick={handleViewAllClick}
                                 >
@@ -163,7 +169,7 @@ const NavbarComponent = () => {
                             <ul className="mt-4">
                                 {
                                     HAMBURGER_OPTIONS?.map(({ value, label, path }) => (
-                                        <li key={value} className="border-b py-2" onClick={() => {router.push(path); toggleHamburger()}}>
+                                        <li key={value} className="border-b py-2" onClick={() => { router.push(path); toggleHamburger() }}>
                                             <div className="text-gray-700 hover:bg-gray-100 block px-4 py-2 rounded">{label}</div>
                                         </li>
                                     ))
