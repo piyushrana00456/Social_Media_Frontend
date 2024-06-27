@@ -9,7 +9,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const NavbarComponent = () => {
     const router = useRouter();
-    const [isDropdownOpen, setIsDropdownOpen] = useState({ isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false });
+    const DEFAULT_DROP_DOW_STATE = { isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false };
+    const [isDropdownOpen, setIsDropdownOpen] = useState(DEFAULT_DROP_DOW_STATE);
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounceTimer = useRef(null);
@@ -80,6 +81,11 @@ const NavbarComponent = () => {
         router.push(`/search?username=${searchValue}`)
     }
 
+    const handleProfileClick = (username) => {
+        setIsDropdownOpen(DEFAULT_DROP_DOW_STATE);
+        router.push(`/profile/${username}`);
+    }
+
     return (
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
@@ -105,7 +111,7 @@ const NavbarComponent = () => {
                                 {
                                     searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
                                         <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex"
-                                            onClick={() => router.push(`/profile/${username}`)}
+                                            onClick={() => handleProfileClick(username)}
                                         >
                                             <img
                                                 src={profilePic}
