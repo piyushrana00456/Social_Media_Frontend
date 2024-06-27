@@ -4,6 +4,7 @@ import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 import { getCookies } from '@/utils';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const NavbarComponent = () => {
     const router = useRouter();
@@ -38,7 +39,7 @@ const NavbarComponent = () => {
 
         debounceTimer.current = setTimeout(() => {
             if (value !== "") {
-                fetch(`http://localhost:8000/api/search/${value}`, {
+                fetch(`${BASE_URL}/api/search/${value}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
