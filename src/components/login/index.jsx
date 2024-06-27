@@ -1,5 +1,6 @@
-
-const LoginComponent = ({handleChange, handleLogin}) => {
+import { validateEmail } from "@/utils";
+const LoginComponent = ({handleChange, handleLogin, credentials, handleGenrateOtp}) => {
+    console.log({bool: !credentials?.email});
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
             <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -18,6 +19,7 @@ const LoginComponent = ({handleChange, handleLogin}) => {
                                 className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 placeholder="Email or Username required"
                                 onChange={handleChange}
+                                autoComplete="false"
                             />
                         </div>
                         <div>
@@ -31,6 +33,7 @@ const LoginComponent = ({handleChange, handleLogin}) => {
                                 required
                                 className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                 onChange={handleChange}
+                                autoComplete="false"
                             />
                         </div>
                         <div className="flex items-center justify-between">
@@ -46,9 +49,14 @@ const LoginComponent = ({handleChange, handleLogin}) => {
                                 </label>
                             </div>
                             <div className="text-sm">
-                                <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                    Forgot password?
-                                </a>
+                                <div>
+                                    <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                        Forgot password?
+                                    </a>
+                                </div>
+                                <div>
+                                <a className="font-medium text-indigo-600 hover:text-indigo-500" href="signup">Create an account</a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -70,7 +78,7 @@ const LoginComponent = ({handleChange, handleLogin}) => {
                     </div>
                 </div>
                 <div className="flex space-x-4">
-                    <button className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
+                    <button disabled={!validateEmail(credentials?.email)} onClick={handleGenrateOtp} className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
                         Email OTP
                     </button>
                 </div>
