@@ -93,7 +93,6 @@ const NavbarComponent = () => {
                         value={searchValue}
                         onChange={(e) => handleChange(e)}
                         onClick={() => toggleSearch(true)}
-                        // onBlur={() => toggleSearch(false)}
                     />
                     <FaSearch className="absolute left-3 top-3 text-gray-500" />
                     {isDropdownOpen?.isSearchOpen && (
@@ -101,7 +100,9 @@ const NavbarComponent = () => {
                             <ul>
                                 {
                                     searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
-                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex">
+                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex" 
+                                            onClick={() => router.push(`/profile/${username}`)}
+                                        >
                                             <img
                                                 src={profilePic}
                                                 alt="User Avatar"
