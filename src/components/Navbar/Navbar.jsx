@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
@@ -39,14 +40,13 @@ const NavbarComponent = () => {
 
         debounceTimer.current = setTimeout(() => {
             if (value !== "") {
-                fetch(`${BASE_URL}/api/search/${value}`, {
-                    method: 'GET',
+                axios.get(`${BASE_URL}/api/search/${value}`, {
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': user?.token
+                                'Content-Type': 'application/json',
+                                'Authorization': user?.token
                     },
-                }).then(res => res.json()).then((res) => {
-                    setSearchResult(res.users || []);
+                }).then(res => {
+                    setSearchResult(res.data?.users || []);
                 })
             }
         }, 2000)
