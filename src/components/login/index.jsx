@@ -53,9 +53,6 @@ const LoginComponent = ({handleChange, handleLogin, credentials, handleGenrateOt
                                         Forgot password?
                                     </a>
                                 </div>
-                                <div>
-                                <a className="font-medium text-indigo-600 hover:text-indigo-500" href="signup">Create an account</a>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -80,6 +77,9 @@ const LoginComponent = ({handleChange, handleLogin, credentials, handleGenrateOt
                     <button disabled={!validateEmail(credentials?.email)} onClick={handleGenrateOtp} className="flex items-center justify-center w-full px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50">
                         Email OTP
                     </button>
+                </div>
+                <div>
+                    <a className="font-medium text-indigo-600 hover:text-indigo-500" href="register">Create an account</a>
                 </div>
             </div>
         </div>
