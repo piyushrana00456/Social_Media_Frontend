@@ -26,7 +26,6 @@ const LoginPage = () => {
        }  
           try {
             await axios.post('http://localhost:8000/api/auth/login', dataToSend).then((res) => {
-                console.log(res);
                 login(res.data)
             })
           } catch (error) {
@@ -48,7 +47,7 @@ const LoginPage = () => {
          }
          try {
             await axios.post('http://localhost:8000/api/auth/otp-login', dataToSend).then((res) => {
-               console.log({res});
+               login(res.data)
            }) 
          } catch (error) {
             console.error('Error during login', error.message); 
