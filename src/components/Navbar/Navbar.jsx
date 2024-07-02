@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
+import { MdOutlineAddReaction } from "react-icons/md";
 import { CONSTANTS, HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
 import { getCookies, removeCookies } from '@/utils';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -38,8 +39,8 @@ const NavbarComponent = () => {
             setSearchResult([])
             return;
         }
-        
-        if(value.length > 2){
+
+        if (value.length > 2) {
 
             if (debounceTimer.current) clearTimeout(debounceTimer.current);
 
@@ -87,12 +88,23 @@ const NavbarComponent = () => {
         router.push(`/profile/${username}`);
     }
 
-    const handleOPtionsClick= (value) => {
-        if(value === CONSTANTS.logout){
+    const handleOPtionsClick = (value) => {
+        if (value === CONSTANTS.logout) {
             removeCookies(CONSTANTS.userData);
             removeCookies(CONSTANTS.token)
             router.push("/login");
         }
+    }
+
+    const handleSendFriendsRequest = (userId) => {
+        axios.get(`${BASE_URL}/api/request/send/${userId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": user.token,
+            }
+        }).then(res => {
+            console.log(res.data);
+        })
     }
 
     return (
@@ -118,16 +130,27 @@ const NavbarComponent = () => {
                         <div className="absolute mt-2 w-full bg-white shadow-lg rounded-lg z-10">
                             <ul>
                                 {
-                                    searchResult?.length > 0 ? searchResult?.map(({ profilePic, username }) => (
-                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex"
+                                    searchResult?.length > 0 ? searchResult?.map(({ profilePic, username, userId }) => (
+                                        <li key={username} className="px-4 py-2 hover:bg-gray-200 cursor-pointer flex between"
                                             onClick={() => handleProfileClick(username)}
                                         >
+                                            <div className='flex w-3/4 p-1'>
                                             <img
                                                 src={profilePic}
                                                 alt="User Avatar"
                                                 className="h-8 w-8 rounded-full cursor-pointer"
                                             />
-                                            <span className='pl-4'>{username}</span>
+                                            <span className='pl-4 font-bold'>{username}</span>
+                                            </div>
+                                            <div className='w-1/4 flex justify-center'>
+                                                <button 
+                                                    type="button" 
+                                                    className="text-blue-700 border border-blue-700 hover:bg-blue-700 hover:text-white focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm p-1 text-center inline-flex items-center me-2 dark:border-blue-500 dark:text-blue-500 dark:hover:text-white dark:focus:ring-blue-800 dark:hover:bg-blue-500"
+                                                    onClick = {() => handleSendFriendsRequest(userId)}
+                                                >
+                                                    <MdOutlineAddReaction size={'2rem'}/>
+                                                </button>
+                                            </div>
                                         </li>
                                     )) :
                                         (
@@ -161,9 +184,9 @@ const NavbarComponent = () => {
                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                 {
                                     USER_PROFILE_OPTIONS?.map(({ value, label }) => (
-                                        <div 
-                                            key={value} 
-                                            className='block px-4 py-2 text-gray-700 hover:bg-gray-100' 
+                                        <div
+                                            key={value}
+                                            className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
                                             onClick={() => handleOPtionsClick(value)}
                                         >
                                             {label}
