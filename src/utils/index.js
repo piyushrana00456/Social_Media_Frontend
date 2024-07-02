@@ -19,6 +19,22 @@ export const getCookies = (key) => {
     return null;
 }
 
+export const removeCookies = (key) => {
+    if(!key) return false;
+    const cookie = Cookies.get(key);
+
+    if(cookie){
+        try{
+            Cookies.remove(key);
+            return true;
+        } catch(error){
+            return false;
+        }
+    }
+
+    return false;
+}
+
 export const validateEmail = (email) =>{
     return String(email)
     .toLowerCase()

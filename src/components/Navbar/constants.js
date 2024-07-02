@@ -11,3 +11,12 @@ export const HAMBURGER_OPTIONS = [
     {value: 'services', label: "Services", path: '/'},
     {value: 'contact', label: "Contact", path: '/'},
 ]
+
+
+export const CONSTANTS = {
+    logout: "logout",
+    settings: "settings",
+    profile: "profile",
+    userData: "userData",
+    token: "token",
+}
