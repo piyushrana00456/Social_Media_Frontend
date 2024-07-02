@@ -3,9 +3,10 @@ import { useRouter } from 'next/router';
 import axios from 'axios';
 import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
-import { HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
-import { getCookies } from '@/utils';
+import { CONSTANTS, HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
+import { getCookies, removeCookies } from '@/utils';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 
 const NavbarComponent = () => {
     const router = useRouter();
@@ -86,6 +87,14 @@ const NavbarComponent = () => {
         router.push(`/profile/${username}`);
     }
 
+    const handleOPtionsClick= (value) => {
+        if(value === CONSTANTS.logout){
+            removeCookies(CONSTANTS.userData);
+            removeCookies(CONSTANTS.token)
+            router.push("/login");
+        }
+    }
+
     return (
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
@@ -152,7 +161,11 @@ const NavbarComponent = () => {
                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-10">
                                 {
                                     USER_PROFILE_OPTIONS?.map(({ value, label }) => (
-                                        <div key={value} className='block px-4 py-2 text-gray-700 hover:bg-gray-100'>
+                                        <div 
+                                            key={value} 
+                                            className='block px-4 py-2 text-gray-700 hover:bg-gray-100' 
+                                            onClick={() => handleOPtionsClick(value)}
+                                        >
                                             {label}
                                         </div>
                                     ))
