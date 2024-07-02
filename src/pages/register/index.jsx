@@ -2,25 +2,35 @@ import { useState } from "react";
 import SignUpComponent from "@/components/signup";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
+import uploadPictures from "@/utils/uploadPictures";
 
 const SignUpPage = () => {
    const [regData, setRegData] = useState({});
    const {login} = useAuth();
    const handleChange = (e) =>{
-     const {name, value} = e.target;
-     setRegData({...regData, [name] : value})
+     const {name, value, files} = e.target;
+     setRegData({...regData, [name] : name === "profilePicture" ? files[0] : value})
    }
 
    const handleSubmit = async (e) => {
      e.preventDefault();
-     const {name, email, username, profilePicture, gender, password } = regData
-      const dataToSend = {}
-      dataToSend.name = name
-      dataToSend.email = email
-      dataToSend.username = username
-      dataToSend.profilePic = profilePicture
-      dataToSend.gender = gender
-      dataToSend.password = password 
+     const {name, email, username, gender, password } = regData;
+
+     let profilePicture = regData.profilePicture;
+
+     if(profilePicture){
+      profilePicture = await uploadPictures(profilePicture)
+     }
+     
+      const dataToSend = {
+        name,
+        email,
+        username,
+        gender,
+        password,
+        profilePic: profilePicture,
+      };
+
       try {
         await axios.post('http://localhost:8000/api/signup/new-user', dataToSend).then((res) => {
             login(res.data)
