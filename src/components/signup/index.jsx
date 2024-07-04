@@ -1,7 +1,8 @@
 
 import { GENDERS } from "@/utils/contants";
+import LABELS from "@/utils/labels";
 
-const SignUpComponent = ({ handleChange, handleSubmit }) => {
+const SignUpComponent = ({ handleChange, handleSubmit, handleVerfiyUserName, isCheckingUserName, userNameMsg  }) => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-2 sm:p-4">
       <div className="w-full max-w-md p-4 sm:p-8 space-y-6 bg-white rounded-lg shadow-md">
@@ -32,9 +33,25 @@ const SignUpComponent = ({ handleChange, handleSubmit }) => {
                 id="username"
                 autoComplete="off"
                 required
-                className="block w-full px-2 py-1 sm:px-3 sm:py-2 mt-1 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                onChange={handleChange}
+                className={`block w-full px-2 py-1 sm:px-3 sm:py-2 mt-1 border rounded-md shadow-sm sm:text-sm focus:outline-none focus:ring-2 ${
+                  userNameMsg === LABELS?.USER_NAME_AVAILABLE
+                    ? 'border-green-500 focus:ring-green-500'
+                    : userNameMsg === LABELS?.USER_NAME_TAKEN
+                    ? 'border-red-500 focus:ring-red-500'
+                    : 'border-gray-300 focus:ring-indigo-500 focus:border-indigo-500'
+                }`}
+                onChange={handleVerfiyUserName}
               />
+              {isCheckingUserName && <p className="text-sm text-gray-500">Checking...</p>}
+              {userNameMsg && (
+                <p
+                  className={`text-sm text-right ${
+                    userNameMsg === LABELS?.USER_NAME_AVAILABLE ? 'text-green-500' : 'text-red-500'
+                  }`}
+                >
+                  {userNameMsg}
+                </p>
+              )}
             </div>
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -100,6 +117,7 @@ const SignUpComponent = ({ handleChange, handleSubmit }) => {
             <button
               type="submit"
               className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              disabled={userNameMsg === LABELS.USER_NAME_TAKEN}
             >
               Sign up
             </button>
