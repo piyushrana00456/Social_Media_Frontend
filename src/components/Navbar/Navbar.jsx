@@ -5,18 +5,17 @@ import { FaSearch, FaBell, FaTimes } from 'react-icons/fa';
 import { GiHamburgerMenu } from "react-icons/gi";
 import { MdOutlineAddReaction } from "react-icons/md";
 import { CONSTANTS, HAMBURGER_OPTIONS, USER_PROFILE_OPTIONS } from './constants';
-import { getCookies, removeCookies } from '@/utils';
+import { removeCookies } from '@/utils';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 
-const NavbarComponent = () => {
+const NavbarComponent = ({socket, user}) => {
     const router = useRouter();
     const DEFAULT_DROP_DOW_STATE = { isProfileDropDownOpen: false, isHamburgerMenuOpen: false, isSearchOpen: false };
     const [isDropdownOpen, setIsDropdownOpen] = useState(DEFAULT_DROP_DOW_STATE);
     const [searchValue, setSearchValue] = useState('');
     const [searchResult, setSearchResult] = useState([]);
     const debounceTimer = useRef(null);
-    const user = getCookies('userData');
     const searchRef = useRef(null);
 
     const toggleDropdown = () => {
@@ -88,8 +87,11 @@ const NavbarComponent = () => {
         router.push(`/profile/${username}`);
     }
 
-    const handleOPtionsClick = (value) => {
+    const handleOptionsClick = (value) => {
         if (value === CONSTANTS.logout) {
+            if(socket){
+                socket.emit("userDisconnected", user.token);
+            }
             removeCookies(CONSTANTS.userData);
             removeCookies(CONSTANTS.token)
             router.push("/login");
@@ -187,7 +189,7 @@ const NavbarComponent = () => {
                                         <div
                                             key={value}
                                             className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
-                                            onClick={() => handleOPtionsClick(value)}
+                                            onClick={() => handleOptionsClick(value)}
                                         >
                                             {label}
                                         </div>
