@@ -1,8 +1,9 @@
 import { useEffect, useRef } from "react";
 import { io } from "socket.io-client";
 import { getCookies } from "@/utils";
+import PrivateRoute from "@/components/PrivateRoute";
 
-export default function Home() {
+const Home = () => {
   const socket = useRef();
   const user = getCookies('userData');
 
@@ -15,6 +16,7 @@ export default function Home() {
 
       socket.current.on("onlineUsers", (usersList) => {
         // list of online users;
+        console.log("onlineUsers", {usersList});
       })
     }
 
@@ -33,3 +35,13 @@ export default function Home() {
     </main>
   );
 }
+
+const HomePage  = () =>{
+  return (
+    <PrivateRoute>
+      <Home/>
+   </PrivateRoute>
+  )
+}
+
+export default HomePage
