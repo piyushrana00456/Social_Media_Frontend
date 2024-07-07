@@ -10,6 +10,7 @@ export const HAMBURGER_OPTIONS = [
     {value: 'about', label: "About", path: '/'},
     {value: 'services', label: "Services", path: '/'},
     {value: 'contact', label: "Contact", path: '/'},
+    {value: 'friend', label: "Friend", path: '/friendlist'},
 ]
 
 
