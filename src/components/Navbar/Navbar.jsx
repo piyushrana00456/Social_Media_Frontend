@@ -109,6 +109,12 @@ const NavbarComponent = ({socket, user}) => {
         })
     }
 
+    const getLabel = (value) => {
+        if(value  === CONSTANTS.profile && user?.username){
+            return user?.username;
+        }
+        return false;
+    }
     return (
         <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
             <div className="flex">
@@ -177,7 +183,7 @@ const NavbarComponent = ({socket, user}) => {
                     <FaBell className="text-gray-500" size={'2rem'} />
                     <div className="relative">
                         <img
-                            src="https://res.cloudinary.com/dnc3g9s6f/image/upload/v1718890814/zjvfntcm4ek9n1adub9w.webp"
+                            src={user?.profilePic || "https://res.cloudinary.com/dnc3g9s6f/image/upload/v1718890814/zjvfntcm4ek9n1adub9w.webp"}
                             alt="User Avatar"
                             className="h-8 w-8 rounded-full cursor-pointer"
                             onClick={toggleDropdown}
@@ -191,7 +197,7 @@ const NavbarComponent = ({socket, user}) => {
                                             className='block px-4 py-2 text-gray-700 hover:bg-gray-100'
                                             onClick={() => handleOptionsClick(value)}
                                         >
-                                            {label}
+                                            {getLabel(value) || label}
                                         </div>
                                     ))
                                 }
