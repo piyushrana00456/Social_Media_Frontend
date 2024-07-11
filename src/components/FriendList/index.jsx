@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 import { FiUser } from 'react-icons/fi';
 
-const FriendList = ({ pendingRequests, friendRequests, acceptedFriends }) => {
+const FriendList = ({ pendingRequests, friendRequests, acceptedFriends, acceptFriendReques,removeSentRequest }) => {
   const [showPending, setShowPending] = useState(true);
   const [showRequests, setShowRequests] = useState(true);
   const [showAccepted, setShowAccepted] = useState(true);
@@ -30,7 +30,7 @@ const FriendList = ({ pendingRequests, friendRequests, acceptedFriends }) => {
                     <div className="text-sm text-gray-500">2 hours ago</div>
                   </div>
                   <div className='flex'>
-                     <div className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Cancel</div> 
+                     <div className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onClick={() => removeSentRequest(friend)}>Cancel</div> 
                   </div>
                 </li>
               ))}
@@ -56,7 +56,7 @@ const FriendList = ({ pendingRequests, friendRequests, acceptedFriends }) => {
                     <div className="text-sm text-gray-500">1 day ago</div>
                   </div>
                   <div className="flex space-x-2">
-                    <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Accept</button>
+                    <button className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600" onClick={() => acceptFriendReques(friend)}>Accept</button>
                     <button className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Reject</button>
                   </div>
                 </li>
