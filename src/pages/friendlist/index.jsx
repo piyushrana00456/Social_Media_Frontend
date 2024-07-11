@@ -37,17 +37,45 @@ const FriendsPage = () => {
             console.log('error during friend list', error.message);
         }
     }
-      
+   const removeSentRequest = async (userData) => {
+    const userIdToCancelReq = userData?.user?._id
+    try {
+      await axios.delete(`http://localhost:8000/api/request/cancel/${userIdToCancelReq}`, {
+        headers:{
+          Authorization:  token
+      }
+      }).then(() => {
+        fetchFriendData();
+      })
+    } catch (error) {
+      console.log('error during canceling sent request', error.message);
+    }
+   }   
     useEffect(() => {
         fetchFriendData();
         friendList();
     },[]); 
+
+    const acceptFriendReques = async (userData) => {
+      const userIdToAdd = userData?.user?._id
+        try {
+          await axios.get(`http://localhost:8000/api/request/add/${userIdToAdd}`, {
+            headers:{
+              Authorization:  token
+          }
+          })
+        } catch (error) {
+          console.log('error during add API', error.message); 
+        }  
+    }
   return (
     <div>
       <FriendList
         pendingRequests={pendingRequests}
         friendRequests={friendRequests}
         acceptedFriends={friendsList.friendsList}
+        acceptFriendReques={acceptFriendReques}
+        removeSentRequest={removeSentRequest}
       />
     </div>
   );
