@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { io } from "socket.io-client";
 import "@/styles/globals.css";
 import { getCookies } from "@/utils";
@@ -6,6 +6,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { useRouter } from "next/router";
 import { RESTRICTED_NAVBAR_PATHS } from "@/utils/contants";
 import NavbarComponent from "@/components/Navbar/Navbar";
+import '@/styles/customStyle.css';
 
 export default function App({ Component, pageProps }) {
   
@@ -13,6 +14,7 @@ export default function App({ Component, pageProps }) {
   const socket = useRef();
   const user = getCookies('userData');
   const showNavbar = !RESTRICTED_NAVBAR_PATHS.includes(router.pathname);
+  const [onlineFriendsList, setOnlineFriendsList] = useState([]);
 
   useEffect(() => {
     if(user?.token){
@@ -24,7 +26,7 @@ export default function App({ Component, pageProps }) {
       
         socket.current.on("onlineUsers", (usersList) => {
           // list of online users;
-          console.log("onlineUsers", {usersList});
+          setOnlineFriendsList(usersList)
         })
       }
     
@@ -37,13 +39,12 @@ export default function App({ Component, pageProps }) {
       }
       }
   },[user])
-  
   return (
     <AuthProvider>
       {
         showNavbar && <NavbarComponent socket={socket.current} user={user}/>
       }
-      <Component {...pageProps} socket={socket.current} user={user}/>
+      <Component {...pageProps} socket={socket.current} user={user} onlineFriendsList={onlineFriendsList}/>
     </AuthProvider>
   );
 }
