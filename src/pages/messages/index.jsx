@@ -6,57 +6,70 @@ import { getCookies } from "@/utils";
 import ChatWindow from "@/components/Messages/ChatWindow";
 
 const messages = () => {
-    const [friendsList, setFriendsList] = useState({
-        list:[],
-        selectedUserId: null,
-    });
+    const [friendsList, setFriendsList] = useState([]);
+    const [selectedFriend, setSelectedFriend] = useState(null);
     const [chats, setChats] = useState([]);
     const socket = useRef();
     const user = getCookies('userData');
 
     useEffect(() => {
 
-        if(!socket.current){
+        if (!socket.current) {
             socket.current = io(process.env.NEXT_PUBLIC_BASE_URL);
         }
 
         (async () => {
             try {
                 await axios.get('http://localhost:8000/api/request/accepted', {
-                  headers:{
-                      Authorization:  user?.token
-                  }
+                    headers: {
+                        Authorization: user?.token
+                    }
                 }).then((res) => {
                     const list = res?.data?.friendsList?.friendsList;
-                  setFriendsList({list: list, selectedUserId: list[0]?.user?._id || null })
-                })  
-              } catch (error) {
-                  console.log('error during friend list', error.message);
-              }
+                    setFriendsList(list)
+                    setSelectedFriend(list[0]?.user?._id);
+                })
+            } catch (error) {
+                console.log('error during friend list', error.message);
+            }
         })()
-    },[]);
+    }, []);
 
     useEffect(() => {
-        socket.current.emit("loadMessages", {
-            token: user.token,
-            messagesWith: friendsList.selectedUserId || null,
-        })
+        if (socket.current) {
+            socket.current.emit("loadMessages", {
+                token: user.token,
+                messagesWith: selectedFriend || null,
+            })
 
-        socket.current.on("noMessagesFound", () => {
-            console.log("inside no message")
-        })
+            socket.current.on("noMessagesFound", () => {
+                console.log("inside no message")
+            })
 
-        socket.current.on("messagesFound", ({userChats}) => {
-            console.log({userChats});
-        })
+            socket.current.on("messagesFound", ({ userChats }) => {
+                console.log({ userChats });
+            })
+        }
     }, [])
+
+    const handleSelectedFriend = (friend) => {
+        console.log({ friend, selectedFriend });
+        setSelectedFriend(friend?._id);
+    }
     return (
-        <div className="flex fixed bottom-0 left-0 w-full p-4" style={{height: '85vh'}}>
+        <div className="flex fixed bottom-0 left-0 w-full p-4" style={{ height: '85vh' }}>
             <div className="w-3/12">
-                <Sidebar friendsList={friendsList?.list || []}/>
+                <Sidebar
+                    friendsList={friendsList || []}
+                    selectedFriend={selectedFriend}
+                    handleSelectedFriend={handleSelectedFriend} />
             </div>
-            <div className="w-3/4" style={{border: '1px solid green'}}>
-                <ChatWindow/>
+            <div className="w-3/4">
+                <ChatWindow
+                    token={user?.token}
+                    socket={socket}
+                    selectedFriend={selectedFriend}
+                />
             </div>
         </div>
     )

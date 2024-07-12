@@ -1,6 +1,6 @@
 import React from 'react';
 
-const Sidebar = ({friendsList}) => {
+const Sidebar = ({friendsList, selectedFriend, handleSelectedFriend}) => {
   return (
     <div className="bg-gray-100 p-4 h-full">
       <div className="mb-4">
@@ -8,7 +8,10 @@ const Sidebar = ({friendsList}) => {
         <div className="mt-2">
           {
             friendsList?.map(({user}) => (
-                <div  key={user.username} className="flex items-center p-2 bg-white rounded-md mb-2 shadow-sm cursor-pointer">
+                <div  key={user.username} 
+                  className={`flex items-center p-2 rounded-md mb-2 shadow-sm cursor-pointer ${selectedFriend === user._id ? "bg-zinc-200" : "bg-white" }`} 
+                  onClick={() => {handleSelectedFriend(user); console.log({user},user._id, selectedFriend, user._id === selectedFriend)} }
+                >
                     <div className="h-8 w-8 bg-red-500 rounded-full">
                         <img src={user.profilePic}/>
                     </div>
