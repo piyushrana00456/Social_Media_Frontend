@@ -8,7 +8,7 @@ const Sidebar = ({friendsList}) => {
         <div className="mt-2">
           {
             friendsList?.map(({user}) => (
-                <div className="flex items-center p-2 bg-white rounded-md mb-2 shadow-sm cursor-pointer">
+                <div  key={user.username} className="flex items-center p-2 bg-white rounded-md mb-2 shadow-sm cursor-pointer">
                     <div className="h-8 w-8 bg-red-500 rounded-full">
                         <img src={user.profilePic}/>
                     </div>
