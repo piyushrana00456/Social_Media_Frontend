@@ -1,12 +1,14 @@
+import React, { useRef, useState } from 'react';
 import { getCookies } from '@/utils';
 import axios from 'axios';
 import { useRouter } from 'next/router';
-import React, { useRef, useState } from 'react';
+import UserCard from '../common/userCard';
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Sidebar = ({chats}) => {
   const router = useRouter();
   const [searchValue, setSearchValue] = useState(null);
+  const [searchResult, setSearchResult] = useState([]);
   const debounceRef = useRef(null);
   const user = getCookies("userData");
   
@@ -36,28 +38,25 @@ const Sidebar = ({chats}) => {
     }
   }
 
+  const activeUser = (id) => {
+    return router.query.messageWith === id
+  }
+
   return (
     <div className="bg-gray-100 p-4 h-full">
       <div className="mb-2 h-90 overflow-y-auto">
         <h2 className="text-xl font-bold">Friends</h2>
         <div className="mt-2">
           {
-            chats?.map((el) => (
-                <div 
-                className={`flex items-center p-2 rounded-md mb-2 shadow-sm cursor-pointer ${router.query.messageWith === el?.messagesWith ? "bg-slate-400" : "bg-white"}`} 
-                onClick={() => handleClick(el?.messagesWith)}
-                >
-                    <div className="h-8 w-8 bg-red-500 rounded-full">
-                        <img src={el?.profilePic}/>
-                    </div>
-                    <div className="ml-7">
-                      <p className="font-semibold">{el?.name}</p>
-                      <p className="text-gray-500 text-sm">
-                        {el?.lastMessage?.length > 10 ? `${el?.lastMessage?.substring(0, 10)}...` : el?.lastMessage}
-                      </p>
-                    </div>
-                </div>
-            ))
+            chats?.map((el) => 
+              <div key={el.name}>
+                <UserCard
+                handleClick={handleClick}
+                activeUser={activeUser}
+                data={el} 
+              />
+              </div>
+            )
           }
         </div>
       </div>
