@@ -1,6 +1,13 @@
+import { useRouter } from 'next/router';
 import React from 'react';
 
 const Sidebar = ({chats}) => {
+  const router = useRouter();
+  
+  const handleClick = (id) => {
+    router.push(`/messages?messageWith=${id}`, undefined, { shallow: true});
+  }
+
   return (
     <div className="bg-gray-100 p-4 h-full">
       <div className="mb-4">
@@ -8,13 +15,18 @@ const Sidebar = ({chats}) => {
         <div className="mt-2">
           {
             chats?.map((el) => (
-                <div className="flex items-center p-2 bg-white rounded-md mb-2 shadow-sm cursor-pointer">
+                <div 
+                className={`flex items-center p-2 rounded-md mb-2 shadow-sm cursor-pointer ${router.query.messageWith === el?.messagesWith ? "bg-slate-400" : "bg-white"}`} 
+                onClick={() => handleClick(el?.messagesWith)}
+                >
                     <div className="h-8 w-8 bg-red-500 rounded-full">
                         <img src={el?.profilePic}/>
                     </div>
                     <div className="ml-7">
                       <p className="font-semibold">{el?.name}</p>
-                      <p className="text-gray-500 text-sm">{el?.lastMessage}</p>
+                      <p className="text-gray-500 text-sm">
+                        {el?.lastMessage?.length > 10 ? `${el?.lastMessage?.substring(0, 10)}...` : el?.lastMessage}
+                      </p>
                     </div>
                 </div>
             ))
