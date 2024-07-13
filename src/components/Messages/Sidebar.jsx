@@ -10,7 +10,7 @@ const Sidebar = ({chats}) => {
 
   return (
     <div className="bg-gray-100 p-4 h-full">
-      <div className="mb-4">
+      <div className="mb-2 h-90 overflow-y-auto">
         <h2 className="text-xl font-bold">Friends</h2>
         <div className="mt-2">
           {
@@ -32,6 +32,12 @@ const Sidebar = ({chats}) => {
             ))
           }
         </div>
+      </div>
+      <div className='h-10 flex justify-center' style={{border: '1px solid gray'}}>
+        <input 
+          className='w-full pl-1'
+          placeholder='Search Friends'
+        />
       </div>
     </div>
   );
