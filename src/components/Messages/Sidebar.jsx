@@ -33,9 +33,9 @@ const Sidebar = ({chats}) => {
           }
         </div>
       </div>
-      <div className='h-10 flex justify-center' style={{border: '1px solid gray'}}>
+      <div className='h-10 flex justify-center items-center' style={{border: '1px solid gray'}}>
         <input 
-          className='w-full pl-1'
+          className='pl-2 h-full w-full pl-1 text-xl'
           placeholder='Search Friends'
         />
       </div>
