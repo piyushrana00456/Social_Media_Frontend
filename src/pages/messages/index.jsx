@@ -26,7 +26,6 @@ const messages = ({ initialChats }) => {
     }, []);
 
     useEffect(() => {
-        console.log(router.query.messageWith, "***********************************")
         if (socket.current && router.query.messageWith) {
 
             socket.current.emit("loadMessages", {
