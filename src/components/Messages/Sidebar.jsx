@@ -7,8 +7,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Sidebar = ({ chats, handleSetChat }) => {
   const router = useRouter();
-  const [searchValue, setSearchValue] = useState(null);
+  const [searchValue, setSearchValue] = useState("");
   const [searchResult, setSearchResult] = useState([]);
+  const [userNoFound, setUserNotFound] = useState(false);
   const debounceRef = useRef(null);
   const user = getCookies("userData");
 
@@ -23,6 +24,7 @@ const Sidebar = ({ chats, handleSetChat }) => {
 
     if (value.length === 0) {
       setSearchResult([])
+      setUserNotFound(false);
     }
 
     if (value.length > 2) {
@@ -35,6 +37,7 @@ const Sidebar = ({ chats, handleSetChat }) => {
             Authorization: user?.token,
           }
         }).then((res) => {
+          res.data?.searchList?.length === 0 && setUserNotFound(true);
           setSearchResult(res.data.searchList);
         })
       }, 2500)
@@ -69,7 +72,7 @@ const Sidebar = ({ chats, handleSetChat }) => {
 
   return (
     <div className="bg-gray-100 p-4 h-full">
-      <div className="mb-2 h-90 overflow-y-auto">
+      <div className="mb-2 h-85 overflow-y-auto">
         <h2 className="text-xl font-bold">{searchResult?.length > 0 ? "Search" : "Friends"}</h2>
         <div className="mt-2">
           {
@@ -108,6 +111,11 @@ const Sidebar = ({ chats, handleSetChat }) => {
           value={searchValue}
           onChange={handleChange}
         />
+      </div>
+      <div className='font-bold text-orange-700 text-right'>
+        {
+          userNoFound && "User not found!"
+        }
       </div>
     </div>
   );
