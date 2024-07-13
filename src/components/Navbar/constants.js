@@ -9,7 +9,7 @@ export const HAMBURGER_OPTIONS = [
     {value: 'home', label: "Home", path: '/'},
     {value: 'about', label: "About", path: '/'},
     {value: 'services', label: "Services", path: '/'},
-    {value: 'contact', label: "Contact", path: '/'},
+    {value: 'messages', label: "Messages", path: '/messages'},
     {value: 'friend', label: "Friend", path: '/friendlist'},
 ]
 
