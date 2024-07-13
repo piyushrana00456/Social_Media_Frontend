@@ -26,7 +26,7 @@ const messages = ({ initialChats }) => {
             <div className="w-30">
                 <Sidebar chats={chats} handleSetChat={handleSetChat} />
             </div>
-            <div className="w-70" style={{ border: '1px solid green' }}>
+            <div className="w-70 pl-1">
                 <ChatWindow />
             </div>
         </div>
