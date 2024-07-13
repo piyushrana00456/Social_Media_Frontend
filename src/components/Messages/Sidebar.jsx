@@ -49,7 +49,9 @@ const Sidebar = ({ chats, handleSetChat }) => {
   const handleSearchClick = (data) => {
     const isAlreadyInChat = chats?.some((el) => el.messagesWith === data.id);
 
-    if (isAlreadyInChat) handleRouting({ messagesWith: data.id });
+    if (isAlreadyInChat){
+      handleRouting({ messagesWith: data.id });
+    } 
     else {
       const newMessage = {
         messagesWith: data?.id,
@@ -59,11 +61,10 @@ const Sidebar = ({ chats, handleSetChat }) => {
         date: Date.now()
       }
       handleSetChat(newMessage);
-      setSearchResult([]);
-      setSearchValue("");
-      return handleRouting({ messagesWith: data?.id });
+      handleRouting({ messagesWith: data?.id });
     }
-
+    setSearchResult([]);
+    setSearchValue("");
   }
 
   return (
