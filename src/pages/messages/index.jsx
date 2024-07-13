@@ -43,9 +43,43 @@ const messages = ({ initialChats }) => {
         }
     }, [router.query.messageWith])
 
+    useEffect(() => {
+        if(socket.current){
+            socket.current.on("messageSent", ({newMessage})=> {
+                if(newMessage.receiver === router.query.messageWith){
+                    setMessages((prev) => [...prev, newMessage])
+
+                    setChatsList((prev) => {
+                        const previousChat = prev.find(el => el.messagesWith === newMessage.receiver);
+                        previousChat.lastMessage = newMessage.text;
+                        previousChat.date = newMessage.date;
+                        return [...prev];
+                    })
+                }
+            })
+        }
+
+        return () => {
+            if(socket.current){
+                socket.current.off("messageSent")
+            }
+        }
+    },[])
+
     const handleSetChat = (chat) => {
         if (chat) {
             setChatsList((prev) => [chat, ...prev]);
+        }
+    }
+
+    const handleSendMessage = (textToSend) => {
+        if(socket.current){
+            const payload = {
+                token: user?.token,
+                messageWith: router.query.messageWith,
+                text: textToSend,
+            }
+            socket.current.emit("sendMessage", payload);
         }
     }
 
@@ -64,6 +98,7 @@ const messages = ({ initialChats }) => {
                     messagesWith={router.query.messageWith}
                     senderUsername={user?.username}
                     receiverUsername={massagesBanner?.username}
+                    handleSendMessage={handleSendMessage}
                 />
             </div>
         </div>
