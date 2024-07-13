@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { FaPaperPlane } from 'react-icons/fa';
+import moment from 'moment';
 
 const ChatWindow = ({
     banner,
@@ -29,14 +30,20 @@ const ChatWindow = ({
                                         <p>{el?.text}</p>
                                     </div>
                                 </div>
+                                <div className='text-xs pt-1 pl-1'>
+                                    {moment.utc(el.date).local().startOf('seconds').fromNow()}
+                                </div>
                             </div>
                         ) : (
-                            <div className="mb-4 flex justify-end" key={el._id}>
+                            <div className="mb-4 flex justify-end flex-col items-end" key={el._id}>
                                 <div className='p-1 max-w-45'>
                                     <p className="text-gray-600 text-sm text-right pb-1 pr-1">{senderUsername}</p>
                                     <div className="inline-block p-4 bg-blue-100 rounded-md">
                                         <p>{el?.text}</p>
                                     </div>
+                                </div>
+                                <div className='text-xs pt-1 pr-1'>
+                                    {moment.utc(el.date).local().startOf('seconds').fromNow()}
                                 </div>
                             </div>
                         )
