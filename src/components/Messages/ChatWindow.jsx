@@ -1,55 +1,46 @@
-const ChatWindow = () => {
+import { FaPaperPlane } from 'react-icons/fa';
+
+const ChatWindow = ({ banner, messages, messagesWith, senderUsername, receiverUsername }) => {
     return (
         <div className="w-full h-full bg-white flex flex-col">
             <div className="flex h-10 items-center pl-4 bg-gray-100 border-t border-gray-200">
-            <div className="h-8 w-8 bg-red-500 rounded-full">
-                <img src={""} />
-            </div>
-                <div className="font-bold text-xl pl-2">image</div>
+                <div className="h-8 w-8 bg-red-500 rounded-full">
+                    <img src={banner?.profilePic} />
+                </div>
+                <div className="font-bold text-xl pl-2">{banner?.username}</div>
             </div>
             <div className="flex-1 p-4 overflow-y-auto">
-                <div className="mb-4">
-                    <p className="text-gray-600 text-sm">UI Art Design</p>
-                    <div className="p-4 bg-gray-100 rounded-md">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vel ipsa commodi illum saepe numquam maxime asperiores voluptate sit, minima perspiciatis.</p>
-                    </div>
-                </div>
-                <div className="mb-4 text-right">
-                    <p className="text-gray-600 text-sm">A</p>
-                    <div className="inline-block p-4 bg-blue-100 rounded-md">
-                        <p>I'm ok what about you?</p>
-                    </div>
-                </div>
-                <div className="mb-4">
-                    <p className="text-gray-600 text-sm">UI Art Design</p>
-                    <div className="p-4 bg-gray-100 rounded-md">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing. ?</p>
-                    </div>
-                </div>
-                <div className="mb-4 text-right">
-                    <p className="text-gray-600 text-sm">A</p>
-                    <div className="inline-block p-4 bg-blue-100 rounded-md">
-                        <p>Lorem ipsum dolor sit, amet consectetur adipisicing. ?</p>
-                    </div>
-                </div>
-                <div className="mb-4">
-                    <p className="text-gray-600 text-sm">UI Art Design</p>
-                    <div className="p-4 bg-gray-100 rounded-md">
-                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Perspiciatis, in.</p>
-                    </div>
-                </div>
-                <div className="mb-4 text-right">
-                    <p className="text-gray-600 text-sm">A</p>
-                    <div className="inline-block p-4 bg-blue-100 rounded-md">
-                        <audio controls className="w-full">
-                            <source src="path/to/audio/file.mp3" type="audio/mpeg" />
-                            Your browser does not support the audio element.
-                        </audio>
-                    </div>
-                </div>
+                {
+                    messages?.map((el) => {
+                        return el.sender === messagesWith ? (
+                            <div className="mb-4 text-left" key={el._id}>
+                               <div className='max-w-45'>
+                               <p className="text-gray-600 text-sm pb-1 pl-1">{receiverUsername}</p>
+                                <div className="p-4 bg-gray-100 rounded-md">
+                                    <p>{el?.text}</p>
+                                </div>
+                               </div>
+                            </div>
+                        ) : (
+                            <div className="mb-4 flex justify-end" key={el._id}>
+                                <div className='p-1 max-w-45'>
+                                <p className="text-gray-600 text-sm text-right pb-1 pr-1">{senderUsername}</p>
+                                <div className="inline-block p-4 bg-blue-100 rounded-md">
+                                    <p>{el?.text}</p>
+                                </div>
+                                </div>
+                            </div>
+                        )
+                    })
+                }
             </div>
-            <div className="p-4 bg-gray-100 border-t border-gray-200">
-                <input type="text" placeholder="Type your message..." className="w-full p-2 border border-gray-300 rounded-md" />
+            <div className="p-4 bg-gray-100 border-t border-gray-200 flex justify-between items-center">
+                <input type="text" placeholder="Type your message..." className="w-11/12 p-2 border border-gray-300 rounded-md" />
+                <button
+                    className="ml-2 p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none"
+                >
+                    <FaPaperPlane size="1.5rem" />
+                </button>
             </div>
         </div>
     )
