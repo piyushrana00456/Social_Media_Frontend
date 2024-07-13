@@ -98,8 +98,9 @@ const NavbarComponent = ({socket, user}) => {
         }
     }
 
-    const handleSendFriendsRequest = (userId) => {
-        axios.get(`${BASE_URL}/api/request/send/${userId}`, {
+    const handleSendFriendsRequest = async (userId) => {
+       try {
+      await axios.get(`${BASE_URL}/api/request/send/${userId}`, {
             headers: {
                 'Content-Type': 'application/json',
                 "Authorization": user.token,
@@ -107,6 +108,9 @@ const NavbarComponent = ({socket, user}) => {
         }).then(res => {
             console.log(res.data);
         })
+       } catch (error) {
+          console.log('error during add friend request', error.message);
+       }
     }
 
     const getLabel = (value) => {

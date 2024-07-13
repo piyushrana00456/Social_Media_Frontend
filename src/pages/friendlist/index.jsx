@@ -63,7 +63,21 @@ const FriendsPage = ({onlineFriendsList}) => {
     } catch (error) {
       console.log('error during canceling sent request', error.message);
     }
-   }   
+   }  
+   const handleRemoveFriend = async (userData) => {
+    const userIdToRemove = userData?.user?._id
+    try {
+      await axios.delete(`http://localhost:8000/api/request/remove/${userIdToRemove}`,{
+        headers:{
+          Authorization:  token
+       }
+      }).then(() => {
+        friendList();    
+      })
+    } catch (error) {
+      console.log('error during remove API', error.message); 
+    }
+   } 
     useEffect(() => {
         fetchFriendData();
         friendList();
@@ -91,6 +105,7 @@ const FriendsPage = ({onlineFriendsList}) => {
         removeSentRequest={removeSentRequest}
         rejectRequest={rejectRequest}
         onlineFriendsList={onlineFriendsList}
+        handleRemoveFriend={handleRemoveFriend}
       />
     </div>
   );
