@@ -1,11 +1,39 @@
+import { getCookies } from '@/utils';
+import axios from 'axios';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useRef, useState } from 'react';
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const Sidebar = ({chats}) => {
   const router = useRouter();
+  const [searchValue, setSearchValue] = useState(null);
+  const debounceRef = useRef(null);
+  const user = getCookies("userData");
   
   const handleClick = (id) => {
     router.push(`/messages?messageWith=${id}`, undefined, { shallow: true});
+  }
+
+  const handleChange = (e) => {
+    const value = e.target.value
+
+    setSearchValue(value);
+
+    if(value.length > 2){
+
+      if(debounceRef.current) clearTimeout(debounceRef.current);
+
+      debounceRef.current = setTimeout(() => {
+        axios.get(`${BASE_URL}/api/search/friends/${value}`, {
+          headers: {
+            Authorization: user?.token,
+          }
+        }).then((res) => {
+          console.log(res.data, "res");
+        })
+      }, 2500)
+
+    }
   }
 
   return (
@@ -37,6 +65,7 @@ const Sidebar = ({chats}) => {
         <input 
           className='pl-2 h-full w-full pl-1 text-xl'
           placeholder='Search Friends'
+          onChange={handleChange}
         />
       </div>
     </div>
