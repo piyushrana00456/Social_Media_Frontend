@@ -1,10 +1,17 @@
-import PrivateRoute from "@/components/PrivateRoute";
+import PrivateRoute from "@/components/PrivateRoute"
+import PostCreation from "@/components/Post/post";
+import Sidebar from "@/components/Post/sideBar";
+import Network from "@/components/Post/network";
 
 const Home = () => {
   return (
-    <main className={`flex min-h-screen flex-col items-center justify-between p-24`}>
-      Home Page
-    </main>
+    <div className="w-full flex py-[6rem] px-[3.5rem]">
+      <Sidebar/>
+      <main className={`flex min-h-screen flex-col items-center justify-between p-4 w-1/2`}>
+        <PostCreation/>
+      </main> 
+      <Network/>   
+    </div>
   );
 }
 
