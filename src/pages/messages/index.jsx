@@ -19,6 +19,9 @@ const messages = ({ initialChats }) => {
         if (!socket.current) {
             socket.current = io(BASE_URL);
         }
+        else {
+            socket.current.emit("userConnected", user.token);
+        }
 
         if (chats?.length > 0 && !router.query.messageWith) {
             router.push(`/messages?messageWith=${chats[0].messagesWith}`, undefined, { shallow: true });
@@ -65,6 +68,49 @@ const messages = ({ initialChats }) => {
                         previousChat.date = newMessage.date;
                         return [...prev];
                     })
+                }
+            });
+
+            socket.current.on("newMessageReceived", async ({newMessage}) => {
+                console.log({newMessage}, "*******************************************");
+                if(newMessage.sender === router.query.messageWith){
+                    setMessages((prev) => [...prev, newMessage]);
+                    setChatsList((prev) => {
+                        const prevChat = prev.find((el) => el.messagesWith === newMessage.sender);
+                        prevChat.lastMessage = newMessage.text,
+                        prevChat.date = newMessage.date;
+                        return [...prev];
+                    })
+                }
+                else {
+                    const isPreviousMessage = chats.filter(el => el.messagesWith === newMessage.sender).length > 0;
+
+                    if(isPreviousMessage){
+
+                        setChatsList((prev) => {
+                            const prevChat = prev.find((el) => el.messagesWith === newMessage.sender);
+                        prevChat.lastMessage = newMessage.text,
+                        prevChat.date = newMessage.date;
+                        return [...prev];
+                        })
+                    }
+                    else {
+                        const res = await axios.get(`${BASE_URL}/api/chat/${router.query.messageWith}`, {
+                            headers: {
+                                Authorization: user?.token
+                            }
+                        });
+
+                        const newChat = {
+                            messagesWith: newMessage.sender,
+                            username: res.data.username,
+                            profilePic: res.data.profilePic,
+                            lastMessage: newMessage.text,
+                            date: newMessage.date,
+                        } 
+
+                        setChatsList((prev) => [newChat, ...prev]);
+                    }
                 }
             })
         }
