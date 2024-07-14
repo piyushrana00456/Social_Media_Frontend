@@ -79,7 +79,7 @@ const Sidebar = ({ chats, handleSetChat }) => {
             searchResult?.length > 0 ? (
 
               searchResult.map(el =>
-                <div>
+                <div key={el.id}>
                   <UserCard
                     handleClick={handleSearchClick}
                     // activeUser={activeUser}
