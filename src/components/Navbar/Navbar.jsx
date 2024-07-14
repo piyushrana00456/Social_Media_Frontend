@@ -120,7 +120,7 @@ const NavbarComponent = ({socket, user}) => {
         return false;
     }
     return (
-        <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-100">
+        <nav className="bg-white w-full p-4 shadow fixed top-0 left-0 z-10">
             <div className="flex">
                 <div className="flex items-center w-1/4">
                     <GiHamburgerMenu
