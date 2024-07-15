@@ -2,38 +2,19 @@ import { useState } from 'react';
 import { MdOutlineAddPhotoAlternate, MdEvent, MdOutlineLocationOn, MdOutlineVideoCall, MdOutlineModeEdit } from "react-icons/md";
 
 
-const PostCreationComponent = () => {
-  const [content, setContent] = useState('');
-  const [media, setMedia] = useState(null);
-  const [mediaType, setMediaType] = useState('');
-
-  const handleContentChange = (e) => {
-    setContent(e.target.value);
-  };
-
-  const handleMediaChange = (e) => {
-    const file = e.target.files[0];
-    setMedia(file);
-    setMediaType(e.target.name);
-  };
-
-  const renderMediaPreview = () => {
-    if (!media) return null;
-
-    if (mediaType === 'photo') {
-      return <img src={URL.createObjectURL(media)} alt="Preview" className="w-full h-64 object-cover mt-2" />;
-    } else if (mediaType === 'video') {
-      return (
-        <video controls className="w-full h-64 mt-2">
-          <source src={URL.createObjectURL(media)} type={media.type} />
-          Your browser does not support the video tag.
-        </video>
-      );
-    } else {
-      return null;
-    }
-  };
-
+const PostCreationComponent = ({
+content,
+setContent,
+media,
+setMedia,
+mediaType,
+handleContentChange,
+handleMediaChange,
+renderMediaPreview,
+handleCreatePost,
+...props
+}) => {
+  
   return (
     <div className="w-full p-4 border rounded-md shadow-sm">
       <div className='relative'>
@@ -44,7 +25,7 @@ const PostCreationComponent = () => {
             onChange={handleContentChange}
         />
         <span className='absolute left-3 top-4 text-xl text-blue-400'>
-             <MdOutlineModeEdit/>
+           <MdOutlineModeEdit/>
         </span>
       </div>
       <div className="flex justify-between mt-2">
@@ -76,6 +57,12 @@ const PostCreationComponent = () => {
          </div>
        </div>
      )}
+     <button
+        onClick={handleCreatePost}
+        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+      >
+        Post
+      </button>
     </div>
   );
 };
