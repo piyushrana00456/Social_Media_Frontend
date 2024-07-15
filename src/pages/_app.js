@@ -7,7 +7,9 @@ import { useRouter } from "next/router";
 import { RESTRICTED_NAVBAR_PATHS } from "@/utils/contants";
 import NavbarComponent from "@/components/Navbar/Navbar";
 import '@/styles/customStyle.css';
+import { QueryClient, QueryClientProvider } from "react-query";
 
+const queryClient = new QueryClient();
 export default function App({ Component, pageProps }) {
   
   const router = useRouter();
@@ -40,11 +42,13 @@ export default function App({ Component, pageProps }) {
       }
   },[user])
   return (
+    <QueryClientProvider client={queryClient}> 
     <AuthProvider>
       {
         showNavbar && <NavbarComponent socket={socket.current} user={user}/>
       }
       <Component {...pageProps} socket={socket.current} user={user} onlineFriendsList={onlineFriendsList}/>
     </AuthProvider>
+    </QueryClientProvider>
   );
 }
