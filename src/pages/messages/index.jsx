@@ -40,6 +40,16 @@ const messages = ({ initialChats }) => {
                     username: chats?.messagesWith?.username
                 })
             })
+
+            socket.current.on("noChatFound", async () => {
+                const res = await axios.get(`${BASE_URL}/api/chat/${router.query.messageWith}`, {
+                    headers: {
+                        Authorization: user?.token
+                    }
+                })
+                setMessagesBanner({username: res.data.username, profilePic: res.data.profilePic});
+                setMessages([])
+            })
         }
     }, [router.query.messageWith])
 
